@@ -12,14 +12,18 @@ class JokeList extends Component {
     super(props);
 
     this.state = {
-      jokes: []
+      jokes: JSON.parse(window.localStorage.getItem("jokes") || "[]")
     };
   }
 
-  async componentDidMount() {
-    // debugger;
-    console.log("in component did mount");
+  componentDidMount() {
     //load jokes
+    if (this.state.jokes.length === 0) {
+      this.getJokes();
+    }
+  }
+
+  async getJokes() {
     let jokes = [];
     console.log(jokes);
     while (jokes.length < this.props.numJokesToGet) {
@@ -30,6 +34,7 @@ class JokeList extends Component {
       jokes.push({ id: uuid(), text: res.data.joke, votes: 0 });
     }
     this.setState({ jokes: jokes });
+    window.localStorage.setItem("jokes", JSON.stringify(jokes));
   }
 
   handleVotes(id, delta) {
